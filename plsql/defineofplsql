@@ -1,0 +1,84 @@
+# code block of pl/sql
+
+DECLARE
+      CURSOR, variable , exception
+
+begin
+    {exceptable}
+end 
+
+exception 
+
+# declare a variable 
+
+DECLARE
+    VAR INT := 0;
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('HEY HELLO WORLD' || '-' ||'YASH');
+    DBMS_OUTPUT.PUT_LINE('REGEX SOFTWARE');
+END;
+
+# change value of variable
+
+  DECLARE
+    VAR INT := 0;
+BEGIN
+    var := 12; 
+    if (mod(var,2) = 0) then
+        DBMS_OUTPUT.PUT_LINE('HEY HELLO WORLD' || '-' || VAR);
+    else
+        DBMS_OUTPUT.PUT_LINE('REGEX SOFTWARE');
+    end if;    
+END;
+
+# syntax of loop
+
+DECLARE
+  var_counter INT := 0; -- Use a valid data type like NUMBER or INT, and end statement with a semicolon
+BEGIN
+  WHILE var_counter <= 3 LOOP -- 'WHILE condition LOOP' is the correct syntax
+    DBMS_OUTPUT.PUT_LINE('COUNTER IS: ' || var_counter); -- Each statement needs a semicolon
+    var_counter := var_counter + 1; -- Manual increment using the assignment operator (:=) and semicolon
+  END LOOP; -- 'END LOOP' terminates the loop
+END;
+
+# pl/sql cursor
+-- it is a control structure used to process 
+-- it is a pointer which provide the control over the result
+-- of sql query.
+
+-- combination of pl and sql on oracle live server
+
+declare
+    v_name  varchar(20);
+    v_salary hr.employees.salary%type;
+begin
+
+select first_name into v_name from hr.employees 
+where employee_id = 101;
+select salary into v_salary from hr.EMPLOYEES 
+where EMPLOYEE_ID = 101;
+dbms_output.put_line(v_name ||'-' || v_salary);
+
+end;
+
+%ROWTYPE
+-- %rowtype attribute which is used to create a variable of an recordtype
+-- in this recordtype we store or create a column with it's data type
+
+-- record datatype 
+
+record is datastructure create a group of related data
+
+DECLARE
+    v_rec hr.employees%rowtype;
+BEGIN
+    select * into v_rec from hr.EMPLOYEES 
+    where EMPLOYEE_ID = 102;
+    DBMS_OUTPUT.PUT_LINE(v_rec.first_name || '-' || v_rec.hire_Date);
+END;        
+
+%type and %rowtype 
+
+
+  
