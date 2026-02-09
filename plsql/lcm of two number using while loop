@@ -1,0 +1,19 @@
+DECLARE
+    num1      NUMBER := 12;
+    num2      NUMBER := 18;
+    lcm_val   NUMBER;
+    greater   NUMBER;
+BEGIN
+    IF num1 > num2 THEN
+        greater := num1;
+    ELSE
+        greater := num2;
+    END IF;
+
+    lcm_val := greater;
+    WHILE (lcm_val MOD num1 != 0 OR lcm_val MOD num2 != 0) LOOP
+        lcm_val := lcm_val + greater;
+    END LOOP;
+    DBMS_OUTPUT.PUT_LINE('The LCM of ' || num1 || ' and ' || num2 || ' is ' || lcm_val);
+
+END;
