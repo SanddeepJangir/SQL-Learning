@@ -1,0 +1,27 @@
+DECLARE
+     n_input INT;
+     n_temp INT;
+     n_sum INT := 0;
+     r_digit INT;
+     len_num INT;
+BEGIN
+    n_input := &enter_number;
+
+    n_temp := n_input;     
+
+    len_num := LENGTH(TO_CHAR(n_input));
+
+    WHILE n_temp > 0 LOOP
+       r_digit := MOD(n_temp, 10);
+
+       n_sum := n_sum + POWER(r_digit, len_num);
+
+       n_temp := TRUNC(n_temp / 10);
+    END LOOP;
+
+    IF n_input = n_sum THEN
+        DBMS_OUTPUT.PUT_LINE('The given number ' || n_input || ' is an Armstrong number.');
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('The given number ' || n_input || ' is not an Armstrong number.');
+    END IF;
+END;   
