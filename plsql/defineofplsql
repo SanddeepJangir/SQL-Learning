@@ -80,5 +80,87 @@ END;
 
 %type and %rowtype 
 
+create table emp_cp
+as SELECT employee_id, first_name from hr.employees 
+where employee_id BETWEEN 100 and 104;
+
+SELECT * from emp_cp;
+
+
+-- how to use dml operation 
+
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('we are inside the begin');
+    -- update emp_cp set first_name = 'regex';
+    delete from emp_cp where employee_id = 103;
+    DBMS_OUTPUT.PUT_LINE(sql%rowcount);
+    -- counting kitni rows change huye bcz of dml operation
+end; 
+
+-- how to create cursor
+
+Declare 
+    CURSOR  emp_cur is select * from emp_cp;
+    emp_record emp_cp%rowtype;
+BEGIN     
+    open emp_cur;
+    FETCH emp_cur into emp_record;
+
+    if emp_cur%found THEN
+       DBMS_OUTPUT.PUT_LINE('cursor found');
+    elsif (emp_cur%notfound) THEN
+       DBMS_OUTPUT.PUT_LINE('cursor not found');
+    end if;
+end;     
+
+-- how to create explicit cursor
+
+Declare 
+    CURSOR  emp_cur is select * from emp_cp;
+    -- cursor created explicit
+    emp_record emp_cp%rowtype;
+    -- record variable as same as of the table
+BEGIN     
+    open emp_cur;
+    -- FETCH emp_cur into emp_record;
+ 
+    if emp_cur%isopen THEN -- is cursor open => true otherwise false
+       DBMS_OUTPUT.PUT_LINE('cursor open');
+    end if;
+
+    if emp_cur%found THEN
+       DBMS_OUTPUT.PUT_LINE('cursor get the data');
+    else
+       DBMS_OUTPUT.PUT_LINE('cursor dont found the data');
+    end if;
+
+
+    close emp_cur; -- close the cursor here   
+end;      
+
+-- print data from cursor
+
+Declare 
+    CURSOR  emp_cur is select * from emp_cp;
+    -- cursor created explicit
+    emp_record emp_cp%rowtype;
+    -- record variable as same as of the table
+BEGIN     
+    open emp_cur; -- opened cursor
+    FETCH emp_cur into emp_record; -- here we fetch data from cursor
+ 
+
+    while emp_cur%found 
+    LOOP
+       DBMS_OUTPUT.PUT_LINE(emp_record.employee_id);
+       FETCH emp_cur into emp_record;
+    END LOOP;
+
+
+    close emp_cur; -- close the cursor here   
+END;  
+
+-- 
+
 
   
