@@ -160,7 +160,17 @@ BEGIN
     close emp_cur; -- close the cursor here   
 END;  
 
--- 
+-- print the data from cursor using for loop
 
+Declare 
+    CURSOR  emp_cur is select * from emp_cp;
+    -- cursor created explicit
+    emp_record emp_cp%rowtype;
+    -- record variable as same as of the table
+BEGIN     
+    for line in emp_cur LOOP
+       DBMS_OUTPUT.PUT_LINE(line.employee_id);
+    end LOOP;    
+END;  
 
   
