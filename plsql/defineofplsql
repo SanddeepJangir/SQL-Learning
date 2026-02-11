@@ -173,4 +173,52 @@ BEGIN
     end LOOP;    
 END;  
 
-  
+-- store procdure --> it is a named block pl/sqsl and sql
+-- statement that performs a specific action and is stored within the
+-- oracle database for repeated use.
+
+-- modular design
+-- performance
+-- security
+-- paramaeter Modes
+
+-- first created procedure
+
+create or replace PROCEDURE procedure_test1
+as 
+begin
+    dbms_output.put_line('hello procedure');
+end;    
+
+-- second created procedure 
+
+create or replace procedure second_procedure as 
+begin
+    dbms_output.put_line('calling second procedure & then frist procedure');
+    procedure_test1;
+end;    
+
+execute SECOND_PROCEDURE();
+
+
+-- in, out, in-out parameters 
+
+-- difference between store procedure and function
+
+Parameter 	                                   Function	                                      Stored Procedure
+Return Value	Must return a single value using the RETURN keyword.	                          May or may not return values; uses OUT or IN OUT parameters to return zero or more values.
+Usage in SQL	Can be called directly within SQL statements (SELECT, WHERE, HAVING, etc.).	  Cannot be called directly within a SQL statement; must be executed using an EXECUTE or
+                                                                                                  CALL statement or from within a PL/SQL block.
+DML Operations	Can contain DML statements, but this restricts their usage within SQL queries
+                  unless defined as an autonomous transaction.	                                Commonly used for DML operations and transaction control (e.g., COMMIT, ROLLBACK).
+Parameter Types	Primarily uses IN parameters, although OUT or IN OUT parameters are 
+                  technically possible (but not recommended if calling from SQL).	              Supports IN, OUT, and IN OUT parameters.
+Calling from 
+other Subprograms	Can be called from a stored procedure.	                                      Cannot be called directly from a function (except under specific advanced configurations 
+                                                                                                  like autonomous transactions).
+
+Error Handling	Does not support TRY-CATCH (or EXCEPTION blocks for transaction management
+                  within a function called from SQL).	                                            Supports EXCEPTION handling blocks and transaction management.
+Purpose	      Used for computations, calculations, or data transformations where a single
+                  result is needed.	                                                              Used for executing business logic, managing data flow, and performing complex,
+                                                                                                  multi-step actions.
