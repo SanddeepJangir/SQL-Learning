@@ -16,7 +16,7 @@ from hr.EMPLOYEES where EMPLOYEE_ID BETWEEN 100 and 105;
 
 INSERT into emp_copy VALUES(999,'regex');
 
-2. create a trigger on this table
+2. create a trigger on this table before insert
 
 CREATE OR REPLACE TRIGGER emp_trigger_1
 BEFORE INSERT
@@ -26,3 +26,66 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE('trigger called before the insert statement');
 END;  
 
+3. create a trigger before update 
+
+create TABLE emp_copy
+as 
+select employee_id, first_name
+from hr.EMPLOYEES where EMPLOYEE_ID BETWEEN 100 and 105;
+
+INSERT into emp_copy VALUES(999,'regex');
+
+update EMP_COPY set FIRST_NAME = 'dd' where EMPLOYEE_ID = 106;
+
+4. create a triggers before update
+
+CREATE OR REPLACE TRIGGER emp_trigger_1
+BEFORE UPDATE
+on emp_copy
+
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('trigger called before the update statement');
+END;    
+
+
+types of triggers 
+
+-- row level trigger --> trigger for each row 
+
+A row-level trigger fires once for each row that is affected by a triggering event.
+For example, if deletion is defined as a triggering event for a particular table, 
+and a single DELETE statement deletes five rows from that table, the trigger fires 
+five times, once for each row.
+
+example of row-level trigger
+
+CREATE OR REPLACE TRIGGER emp_trigger_2
+after UPDATE
+on emp_copy
+for each ROW
+
+BEGIN
+    if UPDATING THEN
+        DBMS_OUTPUT.PUT_LINE('trigger called before the update statement');
+    else
+        DBMS_OUTPUT.PUT_LINE('we inserted');
+    end if;    
+END;
+
+
+create TABLE emp_copy
+as 
+select employee_id, first_name
+from hr.EMPLOYEES where EMPLOYEE_ID BETWEEN 100 and 105;
+
+INSERT into emp_copy VALUES(999,'regex');
+
+update EMP_COPY set FIRST_NAME = 'dd' where EMPLOYEE_ID = 104;
+
+insert into EMP_COPY values(996,'regex1');
+-- statement level trigger --> which run after the statement
+
+A statement-level trigger fires only once for each statement.
+Using the previous example, if deletion is defined as a triggering event for a particular table,
+and a single DELETE statement deletes five rows from that table, the trigger fires once.
+Statement-level trigger granularity cannot be specified for BEFORE triggers or INSTEAD OF triggers.
