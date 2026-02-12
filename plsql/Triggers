@@ -1,0 +1,28 @@
+-- Triggrers --> block of code when a event occur automatically
+-- these triggers are stored in the database
+-- example insert, update and delete use dml triggers
+
+-- benefit of triggers 
+-- Automation of task 
+-- audit
+-- data integrity and consistency
+
+-- create a triggers
+1. create a table
+create TABLE emp_copy
+as 
+select employee_id, first_name
+from hr.EMPLOYEES where EMPLOYEE_ID BETWEEN 100 and 105;
+
+INSERT into emp_copy VALUES(999,'regex');
+
+2. create a trigger on this table
+
+CREATE OR REPLACE TRIGGER emp_trigger_1
+BEFORE INSERT
+on emp_copy
+
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('trigger called before the insert statement');
+END;  
+
