@@ -1,0 +1,28 @@
+/*Because views cannot normally be modified, but INSTEAD OF triggers allow:
+
+Updating complex views
+
+Inserting into views based on joins
+
+Controlling custom logic during view modifications*/
+
+__________
+CREATE VIEW emp_view as 
+SELECT emp_id,first_name,salary from emp_cp2;
+SELECT * from emp_view;
+
+_____________________________________________________________
+CREATE or REPLACE TRIGGER trg_emp_view_insert
+INSTEAD OF INSERT on emp_view 
+for each ROW
+BEGIN 
+    INSERT INTO EMP_CP2(EMP_ID,FIRST_NAME,SALARY)
+    VALUES (:new.emp_id,:new.FIRST_NAME,:new.SALARY);
+end;
+/
+___________________________________________________________________
+-- INSERT INTO emp_view VALUES (201, 'John', 45000);
+-- SELECT * FROM emp_view;
+SELECT * FROM emp_cp2
+WHERE emp_id = 201;
+_____________________________________________________
