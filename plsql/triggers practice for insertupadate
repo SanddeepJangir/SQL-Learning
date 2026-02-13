@@ -1,0 +1,51 @@
+-- create a table and describe every attribute
+
+CREATE table emp_cp2
+as SELECT employee_id, first_name, salary from hr.EMPLOYEES;
+
+CREATE TABLE employees_audit (
+    audit_id NUMBER GENERATED ALWAYS as IDENTITY,
+    employee_id NUMBER,
+    old_salary NUMBER,
+    new_salary NUMBER,
+    managed_by VARCHAR2(100),
+    managed_on DATE,
+    action VARCHAR2(10)
+);
+
+-- create a trigger for this 
+
+CREATE OR REPLACE TRIGGER trg_employees_audit
+AFTER INSERT OR UPDATE OR DELETE on emp_cp2
+for each ROW
+BEGIN
+    if INSERTING THEN
+    INSERT INTO EMPLOYEES_AUDIT
+    (employee_id, OLD_SALARY, NEW_SALARY, managed_by, managed_on, action)
+    VALUES
+    (:new.employee_id, NULL,:NEW.salary, user , sysdate,'insert');
+   
+    ELSIF updating THEN
+    INSERT INTO EMPLOYEES_AUDIT(employee_id, OLD_SALARY, NEW_SALARY, managed_by, managed_on, action)
+    VALUES
+    (:new.employee_id,:old.salary,:NEW.salary, user , sysdate,'update');
+   
+    ELSIF deleting THEN
+    INSERT INTO EMPLOYEES_AUDIT(employee_id, OLD_SALARY, NEW_SALARY, managed_by, managed_on, action)
+    VALUES
+    (:old.employee_id, :old.salary,null, user, sysdate,'delete');
+    end if;
+END;
+
+-- operation on this table
+
+INSERT INTO emp_cp2 (employee_id, salary)
+VALUES (101, 50000);
+UPDATE emp_cp2
+SET salary = 60000
+WHERE employee_id = 101;
+
+DELETE FROM emp_cp2 WHERE employee_id = 101;
+SELECT *
+FROM employees_audit
+ORDER BY managed_on;
