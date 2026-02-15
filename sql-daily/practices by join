@@ -1,0 +1,180 @@
+create database company;
+
+use company;
+
+CREATE TABLE employees (
+    emp_id INT PRIMARY KEY,
+    dept VARCHAR(20),
+    join_date DATE
+);
+
+CREATE TABLE salaries (
+    emp_id INT,
+    change_date DATE,
+    salary INT
+);
+
+CREATE TABLE promotions (
+    emp_id INT,
+    promo_date DATE
+);
+
+CREATE TABLE projects (
+    emp_id INT,
+    project_id INT,
+    start_date DATE,
+    end_date DATE
+);
+
+
+INSERT INTO employees VALUES
+(1, 'IT', '2020-01-01'),
+(2, 'IT', '2021-03-10'),
+(3, 'HR', '2019-07-15'),
+(4, 'HR', '2022-05-01'),
+(5, 'Sales', '2020-06-01');
+
+INSERT INTO salaries VALUES
+(1, '2020-01-01', 50000),
+(1, '2021-01-01', 70000),
+(1, '2022-01-01', 100000),
+
+(2, '2021-03-10', 40000),
+(2, '2022-03-10', 45000),
+
+(3, '2019-07-15', 30000),
+(3, '2020-07-15', 60000),
+
+(4, '2022-05-01', 35000),
+
+(5, '2020-06-01', 20000),
+(5, '2021-06-01', 22000);
+
+INSERT INTO promotions VALUES
+(1, '2021-06-01'),
+(3, '2020-08-01');
+
+INSERT INTO projects VALUES
+(1, 101, '2022-01-01', '2022-06-01'),
+(1, 102, '2022-05-01', '2022-12-01'),
+(2, 103, '2022-01-01', '2022-04-01'),
+(3, 104, '2021-01-01', '2021-03-01'),
+(3, 105, '2021-02-01', '2021-05-01');
+
+select * from projects;
+select * from employees;
+select * from promotions;
+select * from salaries;
+
+-- q.1 employees who were never promoted
+
+SELECT e.emp_id
+FROM employees e
+LEFT JOIN promotions p ON e.emp_id = p.emp_id
+WHERE p.emp_id IS NULL;
+
+
+-- Q.2. Salary Changes but No Promotion
+
+SELECT DISTINCT s.emp_id
+FROM salaries s
+LEFT JOIN promotions p ON s.emp_id = p.emp_id
+WHERE p.emp_id IS NULL;
+
+
+-- Q 3. Salary Doubled Within 2 Years
+
+SELECT DISTINCT s1.emp_id
+FROM salaries s1
+JOIN salaries s2 
+  ON s1.emp_id = s2.emp_id
+ AND s2.change_date <= DATE_ADD(s1.change_date, INTERVAL 2 YEAR)
+AND s2.salary >= 2 * s1.salary;
+
+ -- Q 4. First Salary After Promotion
+ 
+ SELECT p.emp_id, MIN(s.change_date) AS first_salary_after_promo
+FROM promotions p
+JOIN salaries s
+  ON p.emp_id = s.emp_id
+ AND s.change_date > p.promo_date
+GROUP BY p.emp_id;
+
+-- Q. 5. Average Tenure per Department
+
+SELECT dept,
+AVG(DATEDIFF(CURDATE(), join_date)/365) AS avg_years
+FROM employees
+GROUP BY dept;
+
+-- 6. Employees with Overlapping Projects
+SELECT DISTINCT p1.emp_id
+FROM projects p1
+JOIN projects p2
+  ON p1.emp_id = p2.emp_id
+ AND p1.project_id <> p2.project_id
+ AND p1.start_date <= p2.end_date
+ AND p2.start_date <= p1.end_date;
+
+-- Q 7. Salary Growth Slowed Down YoY
+
+WITH salary_growth AS (
+  SELECT emp_id,
+         change_date,
+         salary - LAG(salary) OVER (PARTITION BY emp_id ORDER BY change_date) AS growth
+  FROM salaries
+)
+SELECT emp_id
+FROM (
+  SELECT emp_id,
+         growth,
+         LAG(growth) OVER (PARTITION BY emp_id ORDER BY change_date) AS prev_growth
+  FROM salary_growth
+) t
+WHERE growth < prev_growth;
+
+-- Q.8 Percentile Rank Company-Wide 
+SELECT emp_id,
+       salary,
+       PERCENT_RANK() OVER (ORDER BY salary) AS percentile_rank
+FROM salaries;
+
+-- Q.9. Department with Highest Promotion Rate
+
+SELECT e.dept,
+COUNT(DISTINCT p.emp_id) / COUNT(DISTINCT e.emp_id) AS promo_rate
+FROM employees e
+LEFT JOIN promotions p ON e.emp_id = p.emp_id
+GROUP BY e.dept
+ORDER BY promo_rate DESC;
+
+-- Execution Order of SQL (REAL EXAMPLE)
+
+-- Query:
+
+SELECT dept, COUNT(*) 
+FROM employees
+WHERE join_date >= '2020-01-01'
+GROUP BY dept
+HAVING COUNT(*) > 1
+ORDER BY dept
+LIMIT 2;
+
+-- Internal Execution Order:
+
+-- FROM → load employees
+
+-- WHERE → filter join_date ≥ 2020
+
+-- GROUP BY → group by dept
+
+-- HAVING → remove groups with count ≤ 1
+
+-- SELECT → pick dept, COUNT
+
+-- ORDER BY → sort
+
+-- LIMIT → restrict rows
+
+
+
