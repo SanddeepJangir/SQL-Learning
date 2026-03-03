@@ -189,14 +189,6 @@ Concept tested:
 
 ---
 
-# 🎯 Ideal For
-
-* SQL Developer interview prep
-* Data Analyst practice
-* Data Engineer fundamentals
-* Backend developer SQL training
-
----
 
 # 🚀 How to Use
 
@@ -208,25 +200,3 @@ Concept tested:
 
 ---
 
-# 🏁 Next Level Improvements
-
-To make this project more advanced:
-
-* Add indexes
-* Add triggers for stock update
-* Add stored procedures for order creation
-* Add window functions for ranking
-* Create revenue dashboards
-
----
-
-# 📌 Author
-
-SQL Practice Project for advanced interview preparation.
-
----
-
-If you cannot confidently write 4-table joins from this schema,
-you are not ready for mid-level SQL roles.
-
-Practice until you can write them without hesitation.
