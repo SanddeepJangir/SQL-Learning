@@ -1,160 +1,175 @@
-🏦 Bank Management System – SQL Database Project
-📌 Project Overview
+# 🏦 Bank Management System – SQL Database Project
 
-This project simulates a structured banking database system designed using relational database principles.
+## 📌 Project Overview
+
+This project simulates a structured **Banking Database System** designed using strong relational database principles.
 
 It demonstrates:
 
-Proper schema design
+* Proper schema design
+* Third Normal Form (3NF) normalization
+* Foreign key relationships
+* Index optimization
+* Secure data masking using SQL Views
+* Multi-table joins for analytics
 
-Third Normal Form (3NF) normalization
+This project reflects **production-level database thinking**, not basic academic CRUD practice.
 
-Foreign key relationships
+---
 
-Index optimization
+# 🧱 Database Schema
 
-Secure data masking using SQL views
+## 📂 Tables Included
 
-Multi-table joins for analytics
+* `customers`
+* `accounts`
+* `transactions`
+* `loans`
 
-This project is designed to reflect production-level database thinking rather than simple academic CRUD operations.
+---
 
-🧱 Database Schema
-Tables Included
+# 🔗 Entity Relationships
 
-customers
+## Relationship Structure
 
-accounts
+```
+Customers (1) ───── (M) Accounts  
+Accounts  (1) ───── (M) Transactions  
+Customers (1) ───── (M) Loans  
+```
 
-transactions
+### Relationship Explanation
 
-loans
+* One customer can have multiple accounts.
+* One account can have multiple transactions.
+* One customer can have multiple loans.
+* Every foreign key enforces referential integrity.
 
-🔗 Entity Relationships
-4
-Relationship Structure
-Customers (1) ───── (M) Accounts
-Accounts  (1) ───── (M) Transactions
-Customers (1) ───── (M) Loans
-Relationship Explanation
+---
 
-One customer can have multiple accounts.
+# 🧩 Table Design Summary
 
-One account can have multiple transactions.
-
-One customer can have multiple loans.
-
-Every foreign key enforces referential integrity.
-
-🧩 Table Design Summary
-1️⃣ customers
+## 1️⃣ customers
 
 Stores personal customer information.
 
-Column	Description
-customer_id	Primary key
-full_name	Customer full name
-aadhaar_number	Government ID (Sensitive)
-phone	Contact number (Sensitive)
-email	Email address
-city	City location
-2️⃣ accounts
+| Column         | Description                |
+| -------------- | -------------------------- |
+| customer_id    | Primary Key                |
+| full_name      | Customer full name         |
+| aadhaar_number | Government ID (Sensitive)  |
+| phone          | Contact number (Sensitive) |
+| email          | Email address              |
+| city           | City location              |
+
+---
+
+## 2️⃣ accounts
 
 Stores bank account details.
 
-Column	Description
-account_id	Primary key
-customer_id	Foreign key → customers
-account_number	Unique account number (Sensitive)
-account_type	Savings / Current
-balance	Account balance
-3️⃣ transactions
+| Column         | Description                       |
+| -------------- | --------------------------------- |
+| account_id     | Primary Key                       |
+| customer_id    | Foreign Key → customers           |
+| account_number | Unique account number (Sensitive) |
+| account_type   | Savings / Current                 |
+| balance        | Account balance                   |
+
+---
+
+## 3️⃣ transactions
 
 Stores debit/credit activities.
 
-Column	Description
-transaction_id	Primary key
-account_id	Foreign key → accounts
-transaction_date	Date of transaction
-amount	Transaction amount
-transaction_type	Debit / Credit
-4️⃣ loans
+| Column           | Description            |
+| ---------------- | ---------------------- |
+| transaction_id   | Primary Key            |
+| account_id       | Foreign Key → accounts |
+| transaction_date | Date of transaction    |
+| amount           | Transaction amount     |
+| transaction_type | Debit / Credit         |
+
+---
+
+## 4️⃣ loans
 
 Stores customer loan details.
 
-Column	Description
-loan_id	Primary key
-customer_id	Foreign key → customers
-loan_type	Home / Car / Business
-loan_amount	Approved loan amount
-loan_status	Approved / Pending / Rejected
-🧱 Normalization Strategy
+| Column      | Description                   |
+| ----------- | ----------------------------- |
+| loan_id     | Primary Key                   |
+| customer_id | Foreign Key → customers       |
+| loan_type   | Home / Car / Business         |
+| loan_amount | Approved loan amount          |
+| loan_status | Approved / Pending / Rejected |
 
-This database follows Third Normal Form (3NF).
+---
 
-✅ First Normal Form (1NF)
+# 🧱 Normalization Strategy
 
-Each table has a primary key.
+This database follows **Third Normal Form (3NF)**.
 
-No repeating groups.
+---
 
-All fields contain atomic values.
+## ✅ First Normal Form (1NF)
 
-Example:
+* Each table has a primary key.
+* No repeating groups.
+* All fields contain atomic values.
 
-Account numbers are not stored as comma-separated values.
+**Example:**
 
-Each transaction is a separate row.
+* Account numbers are not stored as comma-separated values.
+* Each transaction is stored as a separate row.
 
-✅ Second Normal Form (2NF)
+---
 
-No partial dependency.
+## ✅ Second Normal Form (2NF)
 
-All non-key columns depend fully on the primary key.
+* No partial dependency.
+* All non-key columns depend fully on the primary key.
 
-Example:
+**Example:**
 
-Account balance depends only on account_id.
+* Account balance depends only on `account_id`.
+* Loan amount depends only on `loan_id`.
 
-Loan amount depends only on loan_id.
+---
 
-✅ Third Normal Form (3NF)
+## ✅ Third Normal Form (3NF)
 
-No transitive dependency.
+* No transitive dependency.
+* No redundant storage of customer data inside account or loan tables.
 
-No redundant storage of customer data inside account or loan tables.
+**Example:**
 
-Example:
+* Customer city is stored only in `customers`.
+* Loan data is not stored in `accounts`.
+* Transaction data is not duplicated elsewhere.
 
-Customer city is stored only in customers.
+### Benefits
 
-Loan data is not stored in accounts table.
+* Prevents update anomalies
+* Prevents delete anomalies
+* Reduces redundancy
+* Improves data consistency
 
-Transaction data is not duplicated elsewhere.
+---
 
-Benefits:
-
-Prevents update anomalies
-
-Prevents delete anomalies
-
-Reduces redundancy
-
-Improves consistency
-
-🔐 Data Security Using SQL View
+# 🔐 Data Security Using SQL View
 
 Sensitive data such as:
 
-Aadhaar number
+* Aadhaar number
+* Phone number
+* Account number
 
-Phone number
+Are masked using a secure SQL view.
 
-Account number
+## Example View
 
-Are masked using a secure view.
-
-Example View
+```sql
 CREATE VIEW secure_customer_view AS
 SELECT 
     c.customer_id,
@@ -168,21 +183,24 @@ SELECT
     a.balance
 FROM customers c
 JOIN accounts a 
-    ON c.customer_id = a.customer_id;
+ON c.customer_id = a.customer_id;
+```
 
 This ensures raw sensitive data is not exposed to reporting users.
 
-🚀 Indexing Strategy
+---
+
+# 🚀 Indexing Strategy
 
 Indexes are created on:
 
-Foreign key columns
+* Foreign key columns
+* Frequently filtered columns
+* Reporting columns
 
-Frequently filtered columns
+## Indexes Created
 
-Reporting columns
-
-Indexes Created
+```sql
 CREATE INDEX idx_accounts_customer_id ON accounts(customer_id);
 CREATE INDEX idx_transactions_account_id ON transactions(account_id);
 CREATE INDEX idx_loans_customer_id ON loans(customer_id);
@@ -190,20 +208,22 @@ CREATE INDEX idx_loans_customer_id ON loans(customer_id);
 CREATE INDEX idx_accounts_account_type ON accounts(account_type);
 CREATE INDEX idx_transactions_date ON transactions(transaction_date);
 CREATE INDEX idx_loans_status ON loans(loan_status);
-Why Indexing Matters
+```
 
-Improves JOIN performance
+## Why Indexing Matters
 
-Optimizes WHERE filtering
+* Improves JOIN performance
+* Optimizes WHERE filtering
+* Reduces full table scans
+* Scales better for large datasets
 
-Reduces full table scans
+---
 
-Scales better for large datasets
-
-📊 Sample Analytical Query
+# 📊 Sample Analytical Query
 
 Example joining secure view with transactions and loans:
 
+```sql
 SELECT 
     v.customer_id,
     v.full_name,
@@ -221,7 +241,13 @@ LEFT JOIN transactions t
     ON v.account_id = t.account_id
 LEFT JOIN loans l 
     ON v.customer_id = l.customer_id;
-📂 Project Structure
+```
+
+---
+
+# 📂 Project Structure
+
+```
 bank-management-system/
 │
 ├── database/
@@ -233,12 +259,26 @@ bank-management-system/
 │   ├── 06_indexes.sql
 │
 └── README.md
-🛠 Technologies Used
+```
 
-MySQL
+---
 
-SQL (DDL, DML, DQL)
+# 🛠 Technologies Used
 
-Index Optimization
+* MySQL
+* SQL (DDL, DML, DQL)
+* Index Optimization
+* Relational Database Design
 
-Relational Database Design
+---
+
+# 🎯 Key Learning Outcomes
+
+* Designing normalized relational databases
+* Enforcing referential integrity
+* Implementing secure data masking
+* Writing multi-table analytical joins
+* Performance optimization using indexing
+
+---
+
