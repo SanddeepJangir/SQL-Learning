@@ -1,158 +1,232 @@
-🛒 E-Commerce SQL Practice Project
+# 🛒 E-Commerce SQL Practice Project
 
-This project simulates a real-world E-Commerce Database designed to practice:
+This project simulates a real-world **E-Commerce Database** designed to practice:
 
-Multiple table joins
-
-Aggregations with GROUP BY
-
-Complex queries
-
-View creation for sensitive data
-
-Interview-level SQL problems
+* Multiple table joins
+* Aggregations with `GROUP BY`
+* Complex queries
+* View creation for sensitive data
+* Interview-level SQL problems
 
 The dataset contains 20 rows in each table to simulate realistic relational behavior.
 
-📂 Database Structure
-1️⃣ customers
+---
+
+# 📂 Database Structure
+
+## 1️⃣ customers
 
 Stores customer information.
 
-Column	Type	Description
-customer_id	INT (PK)	Unique customer ID
-full_name	VARCHAR	Customer name
-email	VARCHAR	Customer email
-phone	VARCHAR	Contact number
-city	VARCHAR	Customer city
-password_hash	VARCHAR	Encrypted password
+| Column        | Type     | Description        |
+| ------------- | -------- | ------------------ |
+| customer_id   | INT (PK) | Unique customer ID |
+| full_name     | VARCHAR  | Customer name      |
+| email         | VARCHAR  | Customer email     |
+| phone         | VARCHAR  | Contact number     |
+| city          | VARCHAR  | Customer city      |
+| password_hash | VARCHAR  | Encrypted password |
 
-⚠ Sensitive column: password_hash
+⚠ Sensitive column: `password_hash`
 
-2️⃣ products
+---
+
+## 2️⃣ products
 
 Stores product catalog.
 
-Column	Type	Description
-product_id	INT (PK)	Unique product ID
-product_name	VARCHAR	Product name
-category	VARCHAR	Product category
-price	DECIMAL	Product price
-stock	INT	Available inventory
-3️⃣ orders
+| Column       | Type     | Description         |
+| ------------ | -------- | ------------------- |
+| product_id   | INT (PK) | Unique product ID   |
+| product_name | VARCHAR  | Product name        |
+| category     | VARCHAR  | Product category    |
+| price        | DECIMAL  | Product price       |
+| stock        | INT      | Available inventory |
+
+---
+
+## 3️⃣ orders
 
 Stores customer order information.
 
-Column	Type	Description
-order_id	INT (PK)	Unique order ID
-customer_id	INT (FK)	Linked to customers
-order_date	DATE	Order date
-status	VARCHAR	Order status
+| Column      | Type     | Description         |
+| ----------- | -------- | ------------------- |
+| order_id    | INT (PK) | Unique order ID     |
+| customer_id | INT (FK) | Linked to customers |
+| order_date  | DATE     | Order date          |
+| status      | VARCHAR  | Order status        |
 
 Relationship:
 
-One customer → Many orders
+* One customer → Many orders
 
-4️⃣ order_items
+---
+
+## 4️⃣ order_items
 
 Stores product-level details inside each order.
 
-Column	Type	Description
-order_item_id	INT (PK)	Unique item ID
-order_id	INT (FK)	Linked to orders
-product_id	INT (FK)	Linked to products
-quantity	INT	Quantity ordered
+| Column        | Type     | Description        |
+| ------------- | -------- | ------------------ |
+| order_item_id | INT (PK) | Unique item ID     |
+| order_id      | INT (FK) | Linked to orders   |
+| product_id    | INT (FK) | Linked to products |
+| quantity      | INT      | Quantity ordered   |
 
 Relationship:
 
-One order → Many products
+* One order → Many products
+* Many-to-many resolved using this table
 
-Many-to-many resolved using this table
+---
 
-5️⃣ payments
+## 5️⃣ payments
 
 Stores payment transactions.
 
-Column	Type	Description
-payment_id	INT (PK)	Unique payment ID
-order_id	INT (FK)	Linked to orders
-amount	DECIMAL	Payment amount
-payment_method	VARCHAR	Card / UPI / NetBanking
-card_number	VARCHAR	Full card number
+| Column         | Type     | Description             |
+| -------------- | -------- | ----------------------- |
+| payment_id     | INT (PK) | Unique payment ID       |
+| order_id       | INT (FK) | Linked to orders        |
+| amount         | DECIMAL  | Payment amount          |
+| payment_method | VARCHAR  | Card / UPI / NetBanking |
+| card_number    | VARCHAR  | Full card number        |
 
-⚠ Sensitive column: card_number
+⚠ Sensitive column: `card_number`
 
-🔐 Security Implementation (Views)
+---
+
+# 🔐 Security Implementation (Views)
 
 Sensitive information should never be exposed directly.
 
-1️⃣ Secure Payment View
+## 1️⃣ Secure Payment View
 
-Masks card numbers
-
-Shows only last 4 digits
+* Masks card numbers
+* Shows only last 4 digits
 
 Example output:
 
-payment_id	order_id	amount	payment_method	masked_card
-1	1	64000	Card	XXXX-XXXX-XXXX-1234
-2️⃣ Public Customer View
+| payment_id | order_id | amount | payment_method | masked_card         |
+| ---------- | -------- | ------ | -------------- | ------------------- |
+| 1          | 1        | 64000  | Card           | XXXX-XXXX-XXXX-1234 |
+
+---
+
+## 2️⃣ Public Customer View
 
 Excludes:
 
-password_hash
+* password_hash
 
 Example output:
 
-customer_id	full_name	email	city
-🔎 Practice Problems Included
-1. Multi-table Join
+| customer_id | full_name | email | city |
+| ----------- | --------- | ----- | ---- |
+
+---
+
+# 🔎 Practice Problems Included
+
+### 1. Multi-table Join
 
 Retrieve:
 
-Customer name
-
-Product name
-
-Quantity
-
-Total price per item
+* Customer name
+* Product name
+* Quantity
+* Total price per item
 
 Tables involved:
 customers → orders → order_items → products
 
-2. Aggregation with GROUP BY
+---
+
+### 2. Aggregation with GROUP BY
 
 Calculate total order value per order.
 
 Concepts tested:
 
-JOIN
+* JOIN
+* SUM()
+* GROUP BY
 
-SUM()
+---
 
-GROUP BY
-
-3. Top Customers by Spending
+### 3. Top Customers by Spending
 
 Find top 5 customers based on total spending.
 
 Concepts tested:
 
-Multi-table joins
+* Multi-table joins
+* Aggregation
+* ORDER BY DESC
+* LIMIT
 
-Aggregation
+---
 
-ORDER BY DESC
-
-LIMIT
-
-4. LEFT JOIN (Missing Data Detection)
+### 4. LEFT JOIN (Missing Data Detection)
 
 Find customers who never made a payment.
 
 Concept tested:
 
-LEFT JOIN
+* LEFT JOIN
+* NULL filtering
 
-NULL filtering
+---
+
+# 🧠 Skills Practiced
+
+✔ Relational database design
+✔ Foreign key relationships
+✔ Join chaining (4+ tables)
+✔ Aggregation logic
+✔ Data masking using Views
+✔ Interview-ready SQL patterns
+
+---
+
+# 🎯 Ideal For
+
+* SQL Developer interview prep
+* Data Analyst practice
+* Data Engineer fundamentals
+* Backend developer SQL training
+
+---
+
+# 🚀 How to Use
+
+1. Create tables
+2. Insert provided dataset (20 rows each)
+3. Write queries for the practice problems
+4. Compare your output with expected results
+5. Optimize queries
+
+---
+
+# 🏁 Next Level Improvements
+
+To make this project more advanced:
+
+* Add indexes
+* Add triggers for stock update
+* Add stored procedures for order creation
+* Add window functions for ranking
+* Create revenue dashboards
+
+---
+
+# 📌 Author
+
+SQL Practice Project for advanced interview preparation.
+
+---
+
+If you cannot confidently write 4-table joins from this schema,
+you are not ready for mid-level SQL roles.
+
+Practice until you can write them without hesitation.
